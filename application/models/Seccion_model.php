@@ -89,6 +89,13 @@ class Seccion_Model extends CI_Model{
 
     }
 
+    function eliminarTramo($id){
+
+        $query = $this->db->query('DELETE from seccion_tramo where tramo_id='.$id);
+        
+
+    }
+
     function asignarTramos($id,$tramo)
     {
         $this->db->set('seccion_id', $id);

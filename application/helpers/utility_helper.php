@@ -1,6 +1,4 @@
-<?php
-
-
+<?php 
 function asset_url(){
-   return 'http://127.0.0.1/inventariosct/';
+   return 'http://10.19.1.53/inventariosct/';
 }

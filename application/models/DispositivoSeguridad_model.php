@@ -317,6 +317,14 @@ class DispositivoSeguridad_Model extends CI_Model{
         return $clave['clave_tramo'];
 
     }
+	
+	function getSentido($id){
+
+        $query = $this->db->query('SELECT sentido from tramo where id='.$id);
+        $clave=$query->row_array();
+        return $clave['sentido'];
+
+    }
 
 
 

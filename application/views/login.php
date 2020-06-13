@@ -6,7 +6,7 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SCT | Verificacion</title>
+    <title>SCT | Login</title>
 
     <link href="<?=asset_url()?>assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?=asset_url()?>assets/font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -22,19 +22,19 @@
         <div>
             <div>
 
-                <h1 class="logo-name"> SCT</h1>
+                <h1 class="logo-name">SCT</h1>
 
             </div>
-            <h3>Bienvenido al Sistema</h3>
+            <h3>Bienvenido</h3>
             <p>Iniciar Sesión</p>
             <form class="m-t" role="form" action="<?=asset_url()?>index.php/login/validar" method="post">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="email" name="usuario" placeholder="nombre Usuario">
+                    <input type="text" class="form-control" id="email" name="usuario" placeholder="Usuario">
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" id="password"  name="contrasena" placeholder="Contraseña">
                 </div>
-                <button type="submit" class="btn btn-primary block full-width m-b">Registrarse</button>
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
             </form>
         </div>
     </div>

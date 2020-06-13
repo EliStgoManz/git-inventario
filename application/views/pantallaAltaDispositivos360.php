@@ -21,7 +21,7 @@
     <br>
     
        <div class=" tooltip-demo"  align="center" id="gallery">
-       <img id="left" src='<?=asset_url()?>img/<?php echo $clave?>/360/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/izqS<?php echo $sentido?>/0000000001_S.jpeg' hidden>
+       <img id="left" src='<?=asset_url()?>img/img/<?php echo $clave?>/360/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/izqS<?php echo $sentido?>/0000000001_S.jpeg' hidden>
                             <div id="photosphere"></div>
 
                             
@@ -748,7 +748,7 @@ var seccion=<?php echo $_SESSION['sc']; ?>;
 var imgactual="0000000001_S.jpeg";
 var viewer = PhotoSphereViewer({
     container: 'photosphere',
-    panorama: '<?=asset_url()?>img/<?php echo $clave?>/360/<?php echo $sentido?>/0000000001_S.jpeg',
+    panorama: '<?=asset_url()?>img/img/<?php echo $clave?>/360/<?php echo $sentido?>/0000000001_S.jpeg',
     caption:'KM: 0+000.0',
     gyroscope: true,
     navbar: [
@@ -1134,7 +1134,7 @@ cursor: "crosshair"
    }); 
 }
 var base="<?=asset_url()?>";
-var ruta="img/<?php echo $clave?>";
+var ruta="img/img/<?php echo $clave?>";
 var minicial=<?php echo $minicio?>;
 var sentido=<?php echo $sentido?>;
 var fotos="";

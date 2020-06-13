@@ -3,7 +3,6 @@
                     <h2>    Alta Dispositivos de Seguridad</h2>
                     <ol class="breadcrumb">
                         <li>
-                            <!--aqui redirigimos a la vista del panel principal -->
                             <a href="<?=asset_url()?>inicio">Inicio</a>
                         </li>
                         <li>
@@ -21,9 +20,9 @@
     <br>
        <div class="carretera tooltip-demo"  align="center" id="gallery">
                             <button class="btn btn-info btn-circle" id="back" name="back" type="button" data-placement="left" data-toggle="tooltip" title="Anterior"><i class="fa fa-chevron-left"></i></button>  
-                            <img id="left" src='<?=asset_url()?>img/<?php echo $clave?>/izqS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/izqS<?php echo $sentido?>/0000000001_S.jpeg' >
-                            <img id="center" src='<?=asset_url()?>img/<?php echo $clave?>/cenS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/cenS<?php echo $sentido?>/0000000001_S.jpeg' >
-                            <img id="right" src='<?=asset_url()?>img/<?php echo $clave?>/derS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/derS<?php echo $sentido?>/0000000001_S.jpeg' >
+                            <img id="left" src='<?=asset_url()?>img/img/<?php echo $clave?>/izqS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/img/<?php echo $clave?>/izqS<?php echo $sentido?>/0000000001_S.jpeg' >
+                            <img id="center" src='<?=asset_url()?>img/img/<?php echo $clave?>/cenS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/img/<?php echo $clave?>/cenS<?php echo $sentido?>/0000000001_S.jpeg' >
+                            <img id="right" src='<?=asset_url()?>img/img/<?php echo $clave?>/derS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/img/<?php echo $clave?>/derS<?php echo $sentido?>/0000000001_S.jpeg' >
                             <button class="btn btn-info btn-circle" id="next" name="next" type="button" data-placement="right" data-toggle="tooltip" title="Siguiente"><i class="fa fa-chevron-right"></i></button>
         </div> 
         <br>
@@ -42,7 +41,7 @@
                               <h4 class="modal-title">Foto Trasera</h4>
                             </div>
                             <div class="trasera modal-body">
-                              <img id="tras" src='<?=asset_url()?>img/<?php echo $clave?>/trasS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/trasS<?php echo $sentido?>/0000000001_S.jpeg' >
+                              <img id="tras" src='<?=asset_url()?>img/img/<?php echo $clave?>/trasS<?php echo $sentido?>/0000000001_S.jpeg' longdesc="0" data-zoom-image='<?=asset_url()?>img/<?php echo $clave?>/trasS<?php echo $sentido?>/0000000001_S.jpeg' >
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -1087,7 +1086,7 @@ cursor: "crosshair"
    }); 
 }
 var base="<?=asset_url()?>";
-var ruta="img/<?php echo $clave?>";
+var ruta="img/img/<?php echo $clave?>";
 var minicial=<?php echo $minicio?>;
 var sentido=<?php echo $sentido?>;
 var fotos="";

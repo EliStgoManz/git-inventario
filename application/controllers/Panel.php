@@ -15,8 +15,7 @@ class Panel extends CI_Controller {
   
     }
  
-    public function index() {
-         
+    public function index() { 
         $secciones=$this->seccion_model->getAllTotal();
         $this->load->view('header');
         $this->load->view('panel',compact('secciones'));

@@ -40,7 +40,7 @@ class Login extends CI_Controller {
 
 	function validarUsuario($usuario, $contrasena)
 	{
-		$valoret=1;
+		$valoret=0;
 		
 		$sql = "select * from usuario where user='$usuario' and pass='$contrasena'";
    		$consulta = $this->db->query($sql);		

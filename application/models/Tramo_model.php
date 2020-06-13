@@ -383,15 +383,6 @@ class Tramo_Model extends CI_Model{
         $this->db->update('tramo', $data); 
     }
 
-
- 
-
-
-
-
-
-
-
     function actualizarDetalle($id,$cadca,$cadgeo)
     {
 
@@ -408,13 +399,19 @@ class Tramo_Model extends CI_Model{
 
     function eliminar($id){
 
-     $query = $this->db->query('DELETE FROM tramo WHERE id='.$id);
- }
+        $query = $this->db->query('DELETE from tramo where id='.$id);
+
+    }
+
+    function eliminarPermisos($id){
+
+        $query = $this->db->query('DELETE from permisos where tramo_id='.$id);
+
+    }
 
     function eliminarDetalles($id){
 
         $query = $this->db->query('DELETE from detalle_tramo where tramo_id='.$id);
-
 
     }
 

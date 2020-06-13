@@ -1,5 +1,4 @@
-<?php 
-//if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 session_start();
 
 if($_SESSION!=null)  {
@@ -95,7 +94,7 @@ class Seccion extends CI_Controller {
         $id=$_GET['id'];
         $tramos=$this->tramo_model->getAll();
         $asignados=$this->tramo_model->getBySeccionId($id);        
-        //$this->load->view('header');
+        $this->load->view('header');
         $this->load->view('pantallaSeccionTramos',compact('tramos','asignados','id'));
         if($_SESSION['editado']=="exito"){
             

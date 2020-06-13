@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 session_start();
 date_default_timezone_set("America/Mexico_City");
+ini_set('memory_limit', '-1'); 
 if($_SESSION!=null)  {
 
 class DispositivoSeguridad extends CI_Controller {
@@ -320,6 +321,7 @@ class DispositivoSeguridad extends CI_Controller {
 		$this->load->view('jsonTramo',compact('json'));
 	}
 	
+	//este la funcion en el controlador con el que se vaa generar el reporte texto, acerca de los dispositivos de seguridad , dispositivos horizontales, verticales, etc
 	public function reporte()
 	{
 		
@@ -329,19 +331,32 @@ class DispositivoSeguridad extends CI_Controller {
 		$this->load->view('footer');
 	}
 
+	public function reporteImg()
+	{
+		
+		$tramos=$this->tramo_model->getAll();
+		$this->load->view('head');
+		$this->load->view('pantallaReporteTramosImg',compact('tramos'));
+		$this->load->view('footer');
+	}
+
 	public function reporteExcel()
 	{
 		$fecha=$_SESSION['sc'];
 		$this->load->library('excel');
 		$excel2 = PHPExcel_IOFactory::createReader('Excel2007');
 		$excel2 = $excel2->load('excel/reporte.xlsx'); // Empty Sheet
+		
 		$excel2->setActiveSheetIndex(0);
+		
 		$contador=2;
 		if(isset($_POST['tramos'])){
 			foreach ($_POST['tramos'] as $tramo)
 			{
-	        	$dispositivos=$this->dispositivoSeguridad_model->getDispositivosByTramo($tramo,$fecha);
+				$dispositivos=$this->dispositivoSeguridad_model->getDispositivosByTramo($tramo,$fecha);
+				
 	        	foreach($dispositivos as $valor){
+					
 	        		$izq="";
 	        		$der="";
 	        		$long=$valor->fin-$valor->inicio;
@@ -385,10 +400,14 @@ class DispositivoSeguridad extends CI_Controller {
 			///Senalamiento Horizontal
 			$excel2->setActiveSheetIndex(1);
 			$contador=3;
+			
 			foreach ($_POST['tramos'] as $tramo)
 			{
-	        	$dispositivos=$this->dispositivoSeguridadDH_model->getDispositivosByTramo($tramo,$fecha);
-	        	foreach($dispositivos as $valor){
+				$dispositivos=$this->dispositivoSeguridadDH_model->getDispositivosByTramo($tramo,$fecha);
+				
+	        	foreach($dispositivos as $valor){					
+					
+					
 	        		$si="";
 	        		$no="";
 	        		if($valor->botones==0)$no="✖"; 
@@ -416,7 +435,8 @@ class DispositivoSeguridad extends CI_Controller {
 			    		->setCellValue('P'.$contador, $valor->longfalta)
 			    		->setCellValue('Q'.$contador, $valor->obs)
 			    		->setCellValue('R'.$contador, $valor->accion);
-			    		$contador++;
+						$contador++;
+						
 			    	}
 				
 			}
@@ -587,6 +607,231 @@ class DispositivoSeguridad extends CI_Controller {
 			$excel2->getActiveSheet()->getStyle('A2:J'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 			$excel2->getActiveSheet()->getStyle('A2:J'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 			$excel2->setActiveSheetIndex(0);
+
+		}
+		$objWriter = PHPExcel_IOFactory::createWriter($excel2, 'Excel2007');
+		$objWriter->save('reporte.xlsx');
+
+		$this->load->helper('download');
+        $image_name = "reporte.xlsx";
+        $data = file_get_contents("reporte.xlsx"); // Read the file's contents
+
+        force_download($image_name, $data);
+        
+	}
+
+	public function reporteExcelImg()
+	{
+		$fecha=$_SESSION['sc'];
+		$this->load->library('excel');
+		$excel2 = PHPExcel_IOFactory::createReader('Excel2007');
+		$excel2 = $excel2->load('excel/FormatoImg.xlsx'); // Empty Sheet		
+
+		
+	
+		if(isset($_POST['tramos'])){
+			
+			///Senalamiento Horizontal
+			$excel2->setActiveSheetIndex(2);
+			$contador=14;
+			
+			foreach ($_POST['tramos'] as $tramo)
+			{
+				$dispositivos=$this->dispositivoSeguridadDH_model->getDispositivosByTramo($tramo,$fecha);
+				$clave=$this->dispositivoSeguridad_model->getClave($tramo);
+				$sentido=$this->dispositivoSeguridad_model->getSentido($tramo);	
+					
+	        	foreach($dispositivos as $valor){	
+									
+					$si="";
+	        		$no="";
+	        		if($valor->botones==0)$no="✖"; 
+	        		else if($valor->botones==1)$si="✖"; 
+	        		$marca="";
+	        		if($valor->marca_reflejante==0)$marca="No"; 
+	        		else if($valor->marca_reflejante==1)$marca="Si";
+	        		
+	        		
+					$excel2->getActiveSheet()
+			    		->setCellValue('A'.$contador, $valor->mtsini)
+			    		->setCellValue('B'.$contador, $valor->mtsfin)
+			    		->setCellValue('C'.$contador, $valor->nombremarca)
+			    		->setCellValue('D'.$contador, $valor->clave_marca)
+			    		->setCellValue('E'.$contador, $valor->colormarca)
+			    		->setCellValue('F'.$contador, $valor->ancho_marca)
+			    		->setCellValue('G'.$contador, $marca)
+			    		->setCellValue('H'.$contador, $si)       
+			    		->setCellValue('I'.$contador, $no)
+			    		->setCellValue('J'.$contador, $valor->imagen)
+			    		->setCellValue('K'.$contador, $valor->longncumple)
+			    		->setCellValue('L'.$contador, $valor->longfalta)
+			    		->setCellValue('M'.$contador, $valor->obs)
+			    		->setCellValue('N'.$contador, $valor->accion);
+						$contador++;
+						
+					}
+
+					$contadorimg=16;
+					$col="B";
+					foreach($dispositivos as $valor){
+						$excel2->setActiveSheetIndex(3);
+						$excel2->getActiveSheet()
+			    		->setCellValue($col.($contadorimg+18), "Foto No. ".$valor->imagen);
+						$objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+						$objDrawing->setWorksheet($excel2->getActiveSheet());	
+						$img="img/img/".$clave."/CenS".$sentido."/".$valor->imagen;
+						if(file_exists($img)){
+							$gdImage = imagecreatefromjpeg($img);
+							$objDrawing->setName('test_img'.$contador);
+							$objDrawing->setDescription('test_img'.$contador);
+							$objDrawing->setImageResource($gdImage);
+							$objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+							$objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+							$objDrawing->setResizeProportional(true);
+							$objDrawing->setHeight(300);
+							$objDrawing->setCoordinates($col.$contadorimg);
+						}
+						
+						if($col=="B"){
+							$col="Q";
+						}else{
+							$col="B";
+							$contadorimg+=21;
+						}
+					}	
+					
+					
+				
+			}
+			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setWrapText(true);
+			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			
+			///Senalamiento Vertical
+			$excel2->setActiveSheetIndex(0);
+			$contador=14;
+			foreach ($_POST['tramos'] as $tramo)
+			{
+				$dispositivos=$this->dispositivoSeguridadDV_model->getDispositivosByTramo($tramo,$fecha);
+				$clave=$this->dispositivoSeguridad_model->getClave($tramo);
+				$sentido=$this->dispositivoSeguridad_model->getSentido($tramo);	
+	        	foreach($dispositivos as $valor){
+	        		$izq="";
+	        		$der="";
+	        		if($valor->lado==2){
+	        			$izq="✖";
+	        			$der="✖";
+
+	        		}else if($valor->lado==0)$izq="✖"; 
+
+	        		else if($valor->lado==1)$der="✖"; 
+
+	        		$longsi="";
+	        		$longno="";
+	        		if($valor->longnorm==0)$longno="✖"; 
+	        		else if($valor->longnorm==1)$longsi="✖"; 
+
+	        		$colorsi="";
+	        		$colorno="";
+	        		if($valor->color_cumple==0)$colorno="✖"; 
+	        		else if($valor->color_cumple==1)$colorsi="✖";
+
+	        		$formasi="";
+	        		$formano="";
+	        		if($valor->forma_cumple==0)$formano="✖"; 
+	        		else if($valor->forma_cumple==1)$formasi="✖";
+
+	        		$pictosi="";
+	        		$pictono="";
+	        		if($valor->pictograma_cumple==0)$pictono="✖"; 
+	        		else if($valor->pictograma_cumple==1)$pictosi="✖";
+
+	        		$estsi="";
+	        		$estno="";
+	        		if($valor->estado_cumple==0)$estno="✖"; 
+	        		else if($valor->estado_cumple==1)$estsi="✖";
+
+	        		$dimsi="";
+	        		$dimno="";
+	        		if($valor->dimensiones_cumple==0)$dimno="✖"; 
+	        		else if($valor->dimensiones_cumple==1)$dimsi="✖";
+
+	        		$msjsi="";
+	        		$msjno="";
+	        		if($valor->mensaje_cumple==0)$msjno="✖"; 
+	        		else if($valor->mensaje_cumple==1)$msjsi="✖";
+	        		
+	        		$cumplenorm="";
+	        		if($valor->cumple_normativa==1) $cumplenorm="✖";
+
+	        		$falta="";
+	        		if($valor->falta==1) $falta="✖";
+	        		
+					$excel2->getActiveSheet()			    		
+						->setCellValue('A'.$contador, $valor->mtsini)
+						->setCellValue('B'.$contador, $sentido)
+			    		->setCellValue('C'.$contador, $valor->nombremarca)
+			    		->setCellValue('D'.$contador, $valor->clave)
+			    		->setCellValue('E'.$contador, $longsi)
+			    		->setCellValue('F'.$contador, $longno)
+			    		->setCellValue('G'.$contador, $colorsi)
+			    		->setCellValue('H'.$contador, $colorno)
+			    		->setCellValue('I'.$contador, $formasi)       
+			    		->setCellValue('J'.$contador, $formano)
+			    		->setCellValue('K'.$contador, $pictosi)
+			    		->setCellValue('L'.$contador, $pictono)
+			    		->setCellValue('M'.$contador, $estsi)
+			    		->setCellValue('N'.$contador, $estno)
+			    		->setCellValue('O'.$contador, $dimsi)
+			    		->setCellValue('P'.$contador, $dimno)
+			    		->setCellValue('Q'.$contador, $msjsi)
+			    		->setCellValue('R'.$contador, $msjno)
+			    		->setCellValue('S'.$contador, $valor->imagen)
+			    		->setCellValue('T'.$contador, $cumplenorm)
+			    		->setCellValue('U'.$contador, $falta)
+			    		->setCellValue('V'.$contador, $valor->longncumple)
+			    		->setCellValue('W'.$contador, $valor->longfalta)
+			    		->setCellValue('X'.$contador, $valor->obs)
+			    		->setCellValue('Y'.$contador, $valor->accion);
+			    		$contador++;
+					}
+					
+					$contadorimg=16;
+					$col="B";
+					foreach($dispositivos as $valor){
+						$excel2->setActiveSheetIndex(1);
+						$excel2->getActiveSheet()
+			    		->setCellValue($col.($contadorimg+18), "Foto No. ".$valor->imagen);
+						$objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+						$objDrawing->setWorksheet($excel2->getActiveSheet());							
+						$img="img/img/".$clave."/DerS".$sentido."/".$valor->imagen;
+						if(file_exists($img)){
+							$gdImage = imagecreatefromjpeg($img);
+							$objDrawing->setName('test_img'.$contador);
+							$objDrawing->setDescription('test_img'.$contador);
+							$objDrawing->setImageResource($gdImage);
+							$objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
+							$objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
+							$objDrawing->setResizeProportional(true);
+							$objDrawing->setHeight(300);
+							$objDrawing->setCoordinates($col.$contadorimg);
+						}
+						
+						
+						if($col=="B"){
+							$col="Q";
+						}else{
+							$col="B";
+							$contadorimg+=21;
+						}
+					}	
+				
+			}
+			$excel2->getActiveSheet()->getStyle('A2:AB'.$contador)->getAlignment()->setWrapText(true);
+			$excel2->getActiveSheet()->getStyle('A2:AB'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+			$excel2->getActiveSheet()->getStyle('A2:AB'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+			
 
 		}
 		$objWriter = PHPExcel_IOFactory::createWriter($excel2, 'Excel2007');

@@ -125,7 +125,10 @@ if($_SESSION!=null){ */
                 <?php if($_SESSION['privilegio']=='ADM' || $_SESSION['privilegio']=='SADM'){?>
                <li>
                 <a href="<?=asset_url()?>dispositivoSeguridad/reporte"><i class="fa fa-cog"></i> <span class="nav-label">Reporte</span></a>                
-                </li>                            
+                </li> 
+				<li>
+                <a href="<?=asset_url()?>dispositivoSeguridad/reporteimg"><i class="fa fa-file-picture-o"></i> <span class="nav-label">Reporte Imagenes</span></a>                
+                </li>   				
                 <?php }?>
                 <?php if($_SESSION['privilegio']=='ADM' || $_SESSION['privilegio']=='SADM' || $_SESSION['gc']==1){?>
                 <li>

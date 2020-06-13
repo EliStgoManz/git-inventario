@@ -215,7 +215,7 @@ class Tramo extends CI_Controller {
 	
 	public function subir()
 	{
-		$storagename = "img/imagenes.zip";
+		$storagename = "img/img/imagenes.zip";
 		if (file_exists($_FILES["file"]["name"])) { unlink($_FILES["file"]["name"]); }
 		move_uploaded_file($_FILES["file"]["tmp_name"], $storagename);
 	}
@@ -257,19 +257,19 @@ class Tramo extends CI_Controller {
 		$tramo->setLongitud($long);
 		$tramo->setUsuarioId($_SESSION['usuario']);
 		$this->tramo_model->insertar($tramo);
-		if(!file_exists("img/".$clave)){
-		mkdir("img/".$clave, 0700);
-		mkdir("img/".$clave."/izqS1", 0700);
-		mkdir("img/".$clave."/cenS1", 0700);
-		mkdir("img/".$clave."/derS1", 0700);
-		mkdir("img/".$clave."/trasS1", 0700);
-		mkdir("img/".$clave."/izqS2", 0700);
-		mkdir("img/".$clave."/cenS2", 0700);
-		mkdir("img/".$clave."/derS2", 0700);
-		mkdir("img/".$clave."/trasS2", 0700);
-		mkdir("img/".$clave."/360", 0700);		
-		mkdir("img/".$clave."/360/1", 0700);
-		mkdir("img/".$clave."/360/2", 0700);
+		if(!file_exists("img/img/".$clave)){
+		mkdir("img/img/".$clave, 0700);
+		mkdir("img/img/".$clave."/izqS1", 0700);
+		mkdir("img/img/".$clave."/cenS1", 0700);
+		mkdir("img/img/".$clave."/derS1", 0700);
+		mkdir("img/img/".$clave."/trasS1", 0700);
+		mkdir("img/img/".$clave."/izqS2", 0700);
+		mkdir("img/img/".$clave."/cenS2", 0700);
+		mkdir("img/img/".$clave."/derS2", 0700);
+		mkdir("img/img/".$clave."/trasS2", 0700);
+		mkdir("img/img/".$clave."/360", 0700);
+		mkdir("img/img/".$clave."/360/1", 0700);
+		mkdir("img/img/".$clave."/360/2", 0700);
 		}
 		$id=$this->tramo_model->getMaxId();
 		$this->tramo_model->insertarDetalles($id,$get_sheetData);
@@ -283,10 +283,19 @@ class Tramo extends CI_Controller {
 	{
 		$tramos=$this->tramo_model->getAll();
 		foreach($tramos as $valor){
-			if(!file_exists("img/".$valor->clave_tramo."/360")){
-		mkdir("img/".$valor->clave_tramo."/360", 0700);		
-		mkdir("img/".$valor->clave_tramo."/360/1", 0700);
-		mkdir("img/".$valor->clave_tramo."/360/2", 0700);
+			if(!file_exists("img/img/".$valor->clave_tramo)){
+		mkdir("img/img/".$valor->clave_tramo, 0700);
+		mkdir("img/img/".$valor->clave_tramo."/izqS1", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/cenS1", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/derS1", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/trasS1", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/izqS2", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/cenS2", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/derS2", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/trasS2", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/360", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/360/1", 0700);
+		mkdir("img/img/".$valor->clave_tramo."/360/2", 0700);
 		}
 
 		}
@@ -350,15 +359,6 @@ class Tramo extends CI_Controller {
 		
 	}
 
-
-
-   
-
-
-
-
-
-
 		public function editarDetalle()
 	{
 		if($_SESSION['privilegio']=='ADM' || $_SESSION['privilegio']=='SADM'){
@@ -398,33 +398,28 @@ class Tramo extends CI_Controller {
 		
 	}
 
-
-	
-        
-		public function eliminar()
+	public function eliminar()
 	{
 		if($_SESSION['privilegio']=='ADM' || $_SESSION['privilegio']=='SADM'){
 			$id=$_GET['id'];
-			//$carpeta=$this->tramo_model->getClave($id);
-			//$this->dispositivoSeguridad_model->eliminar($id);
-			//$this->dispositivoSeguridadDH_model->eliminar($id);
-			//$this->dispositivoSeguridadDV_model->eliminar($id);
-			//$this->dispositivoSeguridadML_model->eliminar($id);
-			//$this->dispositivoSeguridadSN_model->eliminar($id);
-			//$this->tramo_model->eliminarDetalles($id);
+			$carpeta=$this->tramo_model->getClave($id);
+			$this->dispositivoSeguridad_model->eliminar($id);
+			$this->dispositivoSeguridadDH_model->eliminar($id);
+			$this->dispositivoSeguridadDV_model->eliminar($id);
+			$this->dispositivoSeguridadML_model->eliminar($id);
+			$this->dispositivoSeguridadSN_model->eliminar($id);
+			$this->tramo_model->eliminarDetalles($id);
+			$this->tramo_model->eliminarPermisos($id);
+			$this->seccion_model->eliminarTramo($id);
 			$this->tramo_model->eliminar($id);
-			//if(is_dir("img/".$carpeta)){
-			//$this->tramo_model->eliminarDir("img/".$carpeta);
-			//}
-			$this->usuario_model->log("Elimino Tramo ");
+			if(is_dir("img/img/".$carpeta)){
+			$this->tramo_model->eliminarDir("img/img/".$carpeta);
+			}
+			$this->usuario_model->log("Elimino Tramo ".$carpeta);
 			$_SESSION['eliminado']="exito";
 		}
 		redirect('panel/tramos', 'refresh');
 	}
-
-
-
-
 
 	public function trasera(){
 		$this->tramo_model->crearTrasera("img");
