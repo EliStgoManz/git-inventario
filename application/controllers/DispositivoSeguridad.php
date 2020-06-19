@@ -43,6 +43,9 @@ class DispositivoSeguridad extends CI_Controller {
 		}
 	}
 
+
+
+
 	public function alta()
 	{
 		$this->load->view('head');
@@ -331,6 +334,8 @@ class DispositivoSeguridad extends CI_Controller {
 		$this->load->view('footer');
 	}
 
+	//esta funcion de controlador es para descargar los reportes fotograficos
+
 	public function reporteImg()
 	{
 		
@@ -340,16 +345,19 @@ class DispositivoSeguridad extends CI_Controller {
 		$this->load->view('footer');
 	}
 
+
+    //reportes en excel, checar
 	public function reporteExcel()
 	{
 		$fecha=$_SESSION['sc'];
 		$this->load->library('excel');
 		$excel2 = PHPExcel_IOFactory::createReader('Excel2007');
-		$excel2 = $excel2->load('excel/reporte.xlsx'); // Empty Sheet
+		$excel2 = $excel2->load('excel/reporte.xlsx'); //en este documento se alamacenará la información
 		
 		$excel2->setActiveSheetIndex(0);
 		
-		$contador=2;
+		$contador=2;//usaremos un contador
+		
 		if(isset($_POST['tramos'])){
 			foreach ($_POST['tramos'] as $tramo)
 			{
@@ -367,8 +375,10 @@ class DispositivoSeguridad extends CI_Controller {
 	        		}else if($valor->lado==0)$izq="✖"; 
 
 	        		else if($valor->lado==1)$der="✖"; 
+
+	        	
 	        		
-	        		
+	        		//esta pestaña es referente a la información de los dispositivos de seguridad, es la pestaña num 1
 					$excel2->getActiveSheet()->setCellValue('A'.$contador, $valor->latini)
 			    		->setCellValue('B'.$contador, $valor->longini)
 			    		->setCellValue('C'.$contador, $valor->latfin)
@@ -397,7 +407,7 @@ class DispositivoSeguridad extends CI_Controller {
 			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-			///Senalamiento Horizontal
+			//esta sera la pestaña activa para guardar información de dispositivos horizontales
 			$excel2->setActiveSheetIndex(1);
 			$contador=3;
 			
@@ -415,6 +425,7 @@ class DispositivoSeguridad extends CI_Controller {
 	        		$marca="";
 	        		if($valor->marca_reflejante==0)$marca="No"; 
 	        		else if($valor->marca_reflejante==1)$marca="Si";
+
 	        		
 	        		
 					$excel2->getActiveSheet()->setCellValue('A'.$contador, $valor->latini)
@@ -444,7 +455,7 @@ class DispositivoSeguridad extends CI_Controller {
 			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 			
-			///Senalamiento Vertical
+			///esta pestaña tiene información acerca de los dispositivos verticales
 			$excel2->setActiveSheetIndex(2);
 			$contador=3;
 			foreach ($_POST['tramos'] as $tramo)
@@ -574,7 +585,7 @@ class DispositivoSeguridad extends CI_Controller {
 			$excel2->getActiveSheet()->getStyle('A2:J'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 			$excel2->getActiveSheet()->getStyle('A2:J'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 			
-			///Senales
+			///pestaña que guardara información acerca de señales
 			$excel2->setActiveSheetIndex(4);
 			$contador=3;
 			foreach ($_POST['tramos'] as $tramo)
@@ -620,6 +631,8 @@ class DispositivoSeguridad extends CI_Controller {
         
 	}
 
+	//reportes en excel con imagenes
+
 	public function reporteExcelImg()
 	{
 		$fecha=$_SESSION['sc'];
@@ -631,7 +644,8 @@ class DispositivoSeguridad extends CI_Controller {
 	
 		if(isset($_POST['tramos'])){
 			
-			///Senalamiento Horizontal
+			//esta pestaña tiene información acerca de señalamiento horizontal que en el indice viene señalado como 
+			//en el indice  2 pestaña numero 3
 			$excel2->setActiveSheetIndex(2);
 			$contador=14;
 			
@@ -679,7 +693,7 @@ class DispositivoSeguridad extends CI_Controller {
 			    		->setCellValue($col.($contadorimg+18), "Foto No. ".$valor->imagen);
 						$objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
 						$objDrawing->setWorksheet($excel2->getActiveSheet());	
-						$img="img/img/".$clave."/CenS".$sentido."/".$valor->imagen;
+						$img="img/".$clave."/CenS".$sentido."/".$valor->imagen;
 						if(file_exists($img)){
 							$gdImage = imagecreatefromjpeg($img);
 							$objDrawing->setName('test_img'.$contador);
@@ -707,7 +721,8 @@ class DispositivoSeguridad extends CI_Controller {
 			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 			$excel2->getActiveSheet()->getStyle('A2:T'.$contador)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 			
-			///Senalamiento Vertical
+			///en la pestaña numero 1, corriespondiente al indice numero 0 del arreglo
+			//se guardara la información de señalamiento vertical.
 			$excel2->setActiveSheetIndex(0);
 			$contador=14;
 			foreach ($_POST['tramos'] as $tramo)
@@ -804,7 +819,7 @@ class DispositivoSeguridad extends CI_Controller {
 			    		->setCellValue($col.($contadorimg+18), "Foto No. ".$valor->imagen);
 						$objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
 						$objDrawing->setWorksheet($excel2->getActiveSheet());							
-						$img="img/img/".$clave."/DerS".$sentido."/".$valor->imagen;
+						$img="img/".$clave."/DerS".$sentido."/".$valor->imagen;
 						if(file_exists($img)){
 							$gdImage = imagecreatefromjpeg($img);
 							$objDrawing->setName('test_img'.$contador);
