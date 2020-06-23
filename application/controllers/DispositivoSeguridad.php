@@ -328,7 +328,7 @@ class DispositivoSeguridad extends CI_Controller {
 	public function reporte()
 	{
 		
-		$tramos=$this->tramo_model->getAll();
+		$tramos=$this->tramo_model->getAll();//obtenemos la informacion de los tramos de la consulta getAll
 		$this->load->view('head');
 		$this->load->view('pantallaReporteTramos',compact('tramos'));
 		$this->load->view('footer');
@@ -349,6 +349,8 @@ class DispositivoSeguridad extends CI_Controller {
     //reportes en excel, checar
 	public function reporteExcel()
 	{
+		
+
 		$fecha=$_SESSION['sc'];
 		$this->load->library('excel');
 		$excel2 = PHPExcel_IOFactory::createReader('Excel2007');
@@ -620,14 +622,25 @@ class DispositivoSeguridad extends CI_Controller {
 			$excel2->setActiveSheetIndex(0);
 
 		}
-		$objWriter = PHPExcel_IOFactory::createWriter($excel2, 'Excel2007');
-		$objWriter->save('reporte.xlsx');
 
+		foreach($_POST['tramos'] as $tramo){
+	     $objWriter = PHPExcel_IOFactory::createWriter($excel2, 'Excel2007');
+         $nombre_carretera=$this->tramo_model->getCarreteraNom($tramo);
+       	 $objWriter->save('reporte.xlsx');
+       	 //$objWriter->save('php://output');
+       	
 		$this->load->helper('download');
-        $image_name = "reporte.xlsx";
+		
+        $image_name ='"'.$nombre_carretera.'".xlsx';
+       
+   
+
         $data = file_get_contents("reporte.xlsx"); // Read the file's contents
 
         force_download($image_name, $data);
+
+		}
+		
         
 	}
 
@@ -684,11 +697,14 @@ class DispositivoSeguridad extends CI_Controller {
 						$contador++;
 						
 					}
+					/*esta parte es importante  pues aquí se evaluaran las fotografías en el archivo de excel, respecto a las fotogradías */
 
 					$contadorimg=16;
 					$col="B";
 					foreach($dispositivos as $valor){
+						//estamos activando la pestala numero 3 que contendra la información de las imagenes de disposivos horzintales
 						$excel2->setActiveSheetIndex(3);
+						//se activa la pestaña evaluando la celdas que iran acomodando las fotografías, acomodando el numero de la fotografía, imagen
 						$excel2->getActiveSheet()
 			    		->setCellValue($col.($contadorimg+18), "Foto No. ".$valor->imagen);
 						$objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
@@ -702,7 +718,9 @@ class DispositivoSeguridad extends CI_Controller {
 							$objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
 							$objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
 							$objDrawing->setResizeProportional(true);
-							$objDrawing->setHeight(300);
+
+							//$objDrawing->setHeight(500);
+							  $objDrawing->setWidthAndHeight(498,300);
 							$objDrawing->setCoordinates($col.$contadorimg);
 						}
 						
@@ -811,12 +829,14 @@ class DispositivoSeguridad extends CI_Controller {
 			    		$contador++;
 					}
 					
-					$contadorimg=16;
+					//contadorimg=16
+					$contadorimg=13;
 					$col="B";
 					foreach($dispositivos as $valor){
 						$excel2->setActiveSheetIndex(1);
 						$excel2->getActiveSheet()
-			    		->setCellValue($col.($contadorimg+18), "Foto No. ".$valor->imagen);
+						//recordemos que el contador img,anteriormente era $contadorImg+18
+			    		->setCellValue($col.($contadorimg+21), "Foto No. ".$valor->imagen);
 						$objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
 						$objDrawing->setWorksheet($excel2->getActiveSheet());							
 						$img="img/".$clave."/DerS".$sentido."/".$valor->imagen;
@@ -828,7 +848,9 @@ class DispositivoSeguridad extends CI_Controller {
 							$objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_JPEG);
 							$objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_DEFAULT);
 							$objDrawing->setResizeProportional(true);
-							$objDrawing->setHeight(300);
+							//$objDrawing->setHeight(500);
+                            $objDrawing->setWidthAndHeight(498,300);
+							//$objDrawing->setWidth();
 							$objDrawing->setCoordinates($col.$contadorimg);
 						}
 						
@@ -849,14 +871,50 @@ class DispositivoSeguridad extends CI_Controller {
 			
 
 		}
-		$objWriter = PHPExcel_IOFactory::createWriter($excel2, 'Excel2007');
-		$objWriter->save('reporte.xlsx');
 
+		
+
+        
+        
+        
+       
+       
+   
+       foreach($_POST['tramos'] as $tramo){
+     
+       
+       	 $objWriter = PHPExcel_IOFactory::createWriter($excel2, 'Excel2007');
+         $nombre_carretera=$this->tramo_model->getCarreteraNom($tramo);
+       	 $objWriter->save('reporte.xlsx');
+       	 //$objWriter->save('php://output');
+       	
 		$this->load->helper('download');
-        $image_name = "reporte.xlsx";
+		
+        $image_name ='"'.$nombre_carretera.'".xlsx';
+       
+   
+
         $data = file_get_contents("reporte.xlsx"); // Read the file's contents
 
         force_download($image_name, $data);
+
+        
+
+       }
+       
+      
+		
+
+        
+        
+
+
+	    
+		
+
+
+		
+		
         
 	}
 
